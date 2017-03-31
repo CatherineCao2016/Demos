@@ -9,15 +9,24 @@
 #Note: To run this script, you will need to
 
 # a. Register and get an API key at https://www.wunderground.com/weather/api/
+
 # b. set up API key in set_api_key("Insert API Key")
-# c. Use dashDB provided or insert your dashDB credentials 
+
+# c. Use dashDB provided or insert your dashDB credentials
+
 # d. If you are using your own dashDB instance, make sure you have table HISTORY_CLAIM_CLEANED in your dashDB
+
 # e. Specify start date and end date in df <- get_daily_weather(171, "YYYY-MM-DD", "YYYY-MM-DD"). 
 #    For this solution demo, the date range is from 2015-01-01 to 2015-12-31. 
 #    It may take a long time to load weather data for one year because the API call is limited at 10 calls per minute and 500 calls per day for free trial account. 
 #    So we recommend you to use the weather data("weather_data_cleaned") provided for this specific demo. 
 #    Request for a more advanced account if you need more resources.
-# f. After you finish the steps above, select all the code and click Run to run the script.
+
+# f. At the end of the script, choose from the two save options:
+#    If you are using your own dashDB instance, run Option 1 to save the weather data to your own dashDB
+#    If you are using the dashDB we provide, run Option 2 to save as csv file locally so as to avoid overload of dashDB.
+
+# g. After you finish the steps above, select all the code and click Run to run the script.
 
 #########################################################
 
@@ -121,8 +130,8 @@ get_daily_weather <- function(n, startdate, enddate){
 
 # request historical weather data: in the solution demo, the date range is from 2015-01-01 to 2015-12-31.
 #eg.get daily weather data for the first two locations for the first two weeks of 2015
-#df <- get_daily_weather(2, "2015-01-01", "2015-01-14")
-df <- get_daily_weather(171, "YYYY-MM-DD", "YYYY-MM-DD")
+df <- get_daily_weather(2, "2015-01-01", "2015-01-14")
+#df <- get_daily_weather(171, "YYYY-MM-DD", "YYYY-MM-DD")
 
 # clean data
 # keep variables needed
@@ -146,6 +155,10 @@ weather_summary <- summarise(grouped,
 
 summary(weather_summary)
 
-# save to dashDB: it will create a table named WeatherDatafromAPI in dashDB
-idaSave(con, weather_summary, tblName = "WeatherDatafromAPI", rowName = "", conType = "odbc")
+# Save the weather data
 
+# Option 1: If you are using your own dashDB: run the line below to save the table to dashDB: it will create a table named WeatherDatafromAPI in dashDB
+#idaSave(con, weather_summary, tblName = "WEATHERAPI", rowName = "", conType = "odbc")
+
+# Option 2: If you want to save locally, run the line below, and it will be saved as WeatherDatafromAPI.csv under your working directory.
+#write.csv(weather_summary, "WEATHERAPI.csv")
